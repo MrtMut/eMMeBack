@@ -1,6 +1,6 @@
-from flask import Blueprint, jsonify, request
-from models.tablas import Projects, db, ma
-
+from flask import Blueprint, jsonify, request, session, redirect, url_for
+from models.tablas import Projects,Users, db, ma
+from controllers.auth import register_user, login_user
 
 projects_bp = Blueprint('projects', __name__)
 
@@ -64,3 +64,32 @@ def update_project(id):
     project.image=request.json['image']
     db.session.commit()    # confirma el cambio
     return project_schema.jsonify(project), 200    # y retorna un json con el producto
+
+
+# ======================session======================================================================
+
+users_bp = Blueprint('users', __name__)
+
+class UsersSchema(ma.Schema):
+    class Meta:
+        fields=('id','name','email','image','admin', 'user_name' , 'password')
+
+user_schema=UsersSchema()  
+
+
+@users_bp.route('/login', methods=['POST'])
+def login():
+    return login_user()
+
+
+
+@users_bp.route('/register', methods=['POST'])
+def register():
+    return register_user()
+
+   
+
+   
+
+    
+
