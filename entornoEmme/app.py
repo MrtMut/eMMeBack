@@ -1,7 +1,7 @@
-from flask import Flask 
+from flask import Flask, session
 from flask_cors import CORS    
 from models.tablas import db, ma
-from views.routes.routes import projects_bp
+from views.routes.routes import projects_bp, users_bp
 import os
 from dotenv import load_dotenv
 
@@ -16,8 +16,9 @@ app.config['SQLALCHEMY_DATABASE_URI']=f'mysql+pymysql://root:{password}@localhos
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=False #none
 db.init_app(app)
 ma.init_app(app)  #crea el objeto ma de de la clase Marshmallow
-
+app.secret_key = os.getenv("SESSION_PASSWORD")
 app.register_blueprint(projects_bp)
+app.register_blueprint(users_bp)
 
 
 
