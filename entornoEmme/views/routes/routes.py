@@ -1,62 +1,65 @@
 from flask import Blueprint, jsonify, request
-from models.products import Products, db, ma
+from models.tablas import Projects, db, ma
 
 
-productos_bp = Blueprint('productos', __name__)
+projects_bp = Blueprint('projects', __name__)
 
-class ProductoSchema(ma.Schema):
+class ProjectsSchema(ma.Schema):
     class Meta:
-        fields=('id','nombre','precio','stock','imagen')
+        fields=('id','name_project','category','description','imagen', 'user_id')
+
+project_schema=ProjectsSchema()  
+projects_schema=ProjectsSchema(many=True) 
 
 
-product_schema=ProductoSchema()  # El objeto producto_schema es para traer un producto
-products_schema=ProductoSchema(many=True)  # El objeto productos_schema es para traer multiples registros de producto
 
 # crea los endpoint o rutas (json)
-@productos_bp.route('/productos',methods=['GET'])
-def get_Productos():
-    all_products=Products.query.all() # el metodo query.all() lo hereda de db.Model
-    result=products_schema.dump(all_products)  #el metodo dump() lo hereda de ma.schema y
-                                                 # trae todos los registros de la tabla
-    return jsonify(result)     # retorna un JSON de todos los registros de la tabla
+@projects_bp.route('/projects',methods=['GET'])
+def get_Projects():
+    all_projects=Projects.query.all() # el metodo query.all() lo hereda de db.Model
+    if all_projects:
+        result=projects_schema.dump(all_projects)
+        return jsonify(result), 200
+    else:
+        return jsonify({'message': 'Projects not found'}), 404
 
 
+@projects_bp.route('/projects/<id>',methods=['GET'])
+def get_Project(id):
+    project=Projects.query.get(id)
+    if project:
+        return project_schema.jsonify(project), 200   # retorna el JSON de un producto recibido como parametro
+    else:
+        return jsonify({'message': 'Project not found'}), 404
+    
 
-
-@productos_bp.route('/productos/<id>',methods=['GET'])
-def get_producto(id):
-    product=Products.query.get(id)
-    return product_schema.jsonify(product)   # retorna el JSON de un producto recibido como parametro
-
-
-@productos_bp.route('/productos/<id>',methods=['DELETE'])
-def delete_producto(id):
-    product=Products.query.get(id)
-    db.session.delete(product)
+@projects_bp.route('/projects/<id>',methods=['DELETE'])
+def delete_Project(id):
+    project=Projects.query.get(id)
+    db.session.delete(project)
     db.session.commit()                     # confirma el delete
-    return product_schema.jsonify(product) # me devuelve un json con el registro eliminado
+    return project_schema.jsonify(project), 200 # me devuelve un json con el registro eliminado
 
 
-@productos_bp.route('/productos', methods=['POST']) # crea ruta o endpoint
-def create_producto():
-    #print(request.json)  # request.json contiene el json que envio el cliente
-    nombre=request.json['nombre']
-    precio=request.json['precio']
-    stock=request.json['stock']
-    imagen=request.json['imagen']
-    new_product=Products(nombre,precio,stock,imagen)
-    db.session.add(new_product)
+@projects_bp.route('/projects', methods=['POST']) # crea ruta o endpoint
+def create_Project():
+    print(request.json)  # request.json contiene el json que envio el cliente
+    name_project=request.json['name']
+    category=request.json['category']
+    description=request.json['description']
+    image=request.json['image']
+    new_project=Projects(name_project,category,description,image)
+    db.session.add(new_project)
     db.session.commit() # confirma el alta
-    return product_schema.jsonify(new_product)
+    return project_schema.jsonify(new_project), 200
 
 
-@productos_bp.route('/productos/<id>' ,methods=['PUT'])
-def update_producto(id):
-    product=Products.query.get(id)
-    product.nombre=request.json['nombre']
-    product.precio=request.json['precio']
-    product.stock=request.json['stock']
-    product.imagen=request.json['imagen']
-
+@projects_bp.route('/projects/<id>' ,methods=['PUT'])
+def update_project(id):
+    project=Projects.query.get(id)
+    project.name_project=request.json['name']
+    project.category=request.json['category']
+    project.description=request.json['description']
+    project.image=request.json['image']
     db.session.commit()    # confirma el cambio
-    return product_schema.jsonify(product)    # y retorna un json con el producto
+    return project_schema.jsonify(project), 200    # y retorna un json con el producto

@@ -1,7 +1,7 @@
 from flask import Flask 
 from flask_cors import CORS    
-from models.products import db, ma, Products
-from views.routes.routes import productos_bp
+from models.tablas import db, ma
+from views.routes.routes import projects_bp
 import os
 from dotenv import load_dotenv
 
@@ -17,7 +17,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=False #none
 db.init_app(app)
 ma.init_app(app)  #crea el objeto ma de de la clase Marshmallow
 
-app.register_blueprint(productos_bp)
+app.register_blueprint(projects_bp)
 
 
 
