@@ -48,7 +48,8 @@ def create_Project():
     category=request.json['category']
     description=request.json['description']
     image=request.json['image']
-    new_project=Projects(name_project,category,description,image)
+    user_id = 1
+    new_project=Projects(name_project,category,description,image, user_id)
     db.session.add(new_project)
     db.session.commit() # confirma el alta
     return project_schema.jsonify(new_project), 200

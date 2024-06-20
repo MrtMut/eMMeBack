@@ -11,7 +11,7 @@ class Users(db.Model):   # La clase Users hereda de db.Model de SQLAlchemy
     id = db.Column(db.Integer, primary_key=True)  # Define los campos de la tabla
     name = db.Column(db.String(100))
     email = db.Column(db.String(100), unique=True)
-    image = db.Column(db.LargeBinary)
+    image = db.Column(db.String(100))
     admin = db.Column(db.Boolean, nullable=False)
     user_name = db.Column(db.String(100))
     password = db.Column(db.String(400))
@@ -30,7 +30,7 @@ class Projects(db.Model):   # La clase Projects hereda de db.Model de SQLAlchemy
     name_project = db.Column(db.String(100))
     category = db.Column(db.String(100))
     description = db.Column(db.String(1000))
-    image = db.Column(db.LargeBinary)
+    image = db.Column(db.String(100))
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)  # Llave foránea
     
     def __init__(self, name_project, category, description, image, user_id):  # Constructor de la clase
