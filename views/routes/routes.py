@@ -1,5 +1,5 @@
-from flask import Blueprint, jsonify, request, session, redirect, url_for
-from models.tables import Projects, db, ma
+from flask import Blueprint
+from models.tables import ma
 from controllers.auth import register_user, login_user
 from controllers.projectCRUD import create_Project, delete_Project, get_Project, get_Projects, update_project
 

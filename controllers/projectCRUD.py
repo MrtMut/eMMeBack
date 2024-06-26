@@ -1,5 +1,5 @@
-from flask import jsonify, request, session
-from models.tables import Projects, db
+from flask import jsonify, request
+from models.tables import Projects, db, ma
 
 class ProjectsSchema(ma.Schema):
     class Meta:
