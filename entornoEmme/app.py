@@ -9,7 +9,7 @@ app = Flask(__name__)  # crear el objeto app de la clase Flask
 CORS(app) #modulo cors es para que me permita acceder desde el frontend al backend
 load_dotenv()
 password = os.getenv("DB_PASSWORD")
-
+app.config['SECRET_KEY'] = 'tu_clave_secreta_aqui'
 # configuro la base de datos, con el nombre el usuario y la clave
 app.config['SQLALCHEMY_DATABASE_URI']=f'mysql+pymysql://root:{password}@localhost/emmedb'
 # URI de la BBDD                          driver de la BD  user:clave@URLBBDD/nombreBBDD

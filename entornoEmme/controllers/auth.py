@@ -29,11 +29,13 @@ def login_user():
     email = request.json.get('email')
     password = request.json.get('password')
     
+    
     user = Users.query.filter_by(email = email).first()
     
     if user and check_password_hash(user.password, password):
         session['usuario'] = user.email
         session['logged_in'] = True
+        print(session)
         return jsonify({'message': 'Inicio de sesión exitoso'}), 200
     
     return jsonify({'message': 'Credenciales incorrectas'}), 401
