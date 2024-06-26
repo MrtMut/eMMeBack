@@ -1,5 +1,5 @@
 from flask import Flask, session
-from flask_cors import CORS    
+from flask_cors import CORS   
 from models.tables import db, ma
 from views.routes.routes import projects_bp, users_bp
 import os

@@ -25,8 +25,10 @@ def get_Project(id):
     
 def delete_Project(id):
     project=Projects.query.get(id)
-    db.session.delete(project)
-    db.session.commit()                     # confirma el delete
+    if project:
+        result = db.session.delete(project)
+        db.session.commit()  # confirma el delete
+        return jsonify(result), 200                  
     return project_schema.jsonify(project), 200 # me devuelve un json con el registro eliminado
 
 def create_Project():
@@ -36,6 +38,7 @@ def create_Project():
     description=request.json['description']
     image=request.json['image']
     user_id = 1
+
     new_project=Projects(name_project,category,description,image, user_id)
     db.session.add(new_project)
     db.session.commit() # confirma el alta
