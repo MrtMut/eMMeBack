@@ -8,27 +8,27 @@ users_bp = Blueprint('users', __name__)
 
 
 @projects_bp.route('/projects',methods=['GET'])
-def get_Projects():
+def gets():
     return get_Projects()
 
 
 @projects_bp.route('/projects/<id>',methods=['GET'])
-def get_Project():
+def get():
     return get_Project()
 
 
 @projects_bp.route('/projects', methods=['POST']) 
-def create_Project():
+def create():
     return create_Project()
 
 
 @projects_bp.route('/projects/<id>' ,methods=['PUT'])
-def update_project():
+def update():
     return update_project()
 
 
 @projects_bp.route('/projects/<id>',methods=['DELETE'])
-def delete_Project():
+def delete():
     return delete_Project()
 
 

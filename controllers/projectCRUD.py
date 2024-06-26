@@ -3,13 +3,14 @@ from models.tables import Projects, db, ma
 
 class ProjectsSchema(ma.Schema):
     class Meta:
-        fields=('id','name_project','category','description','imagen', 'user_id')
+        fields=('id','name_project','category','description','image', 'user_id')
 
 project_schema=ProjectsSchema()  
 projects_schema=ProjectsSchema(many=True) 
 
 def get_Projects():
     all_projects=Projects.query.all() # el metodo query.all() lo hereda de db.Model
+    print(all_projects)
     if all_projects:
         result=projects_schema.dump(all_projects)
         return jsonify(result), 200
@@ -18,6 +19,7 @@ def get_Projects():
     
 def get_Project(id):
     project=Projects.query.get(id)
+   
     if project:
         return project_schema.jsonify(project), 200   # retorna el JSON de un producto recibido como parametro
     else:
@@ -26,9 +28,9 @@ def get_Project(id):
 def delete_Project(id):
     project=Projects.query.get(id)
     if project:
-        result = db.session.delete(project)
+        db.session.delete(project)
         db.session.commit()  # confirma el delete
-        return jsonify(result), 200                  
+        # return jsonify(result), 200                  
     return project_schema.jsonify(project), 200 # me devuelve un json con el registro eliminado
 
 def create_Project():
