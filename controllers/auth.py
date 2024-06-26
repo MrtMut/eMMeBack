@@ -1,7 +1,7 @@
 
 from flask import jsonify, request, session
 from werkzeug.security import generate_password_hash, check_password_hash
-from models.tablas import db, Users
+from models.tables import Users , db
 
 def register_user():
     if request.is_json:

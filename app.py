@@ -1,6 +1,6 @@
 from flask import Flask, session
 from flask_cors import CORS    
-from models.tablas import db, ma
+from models.tables import db, ma
 from views.routes.routes import projects_bp, users_bp
 import os
 from dotenv import load_dotenv
