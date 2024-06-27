@@ -1,5 +1,5 @@
 from flask import Blueprint
-from models.tables import ma
+from models.tables import ma, Projects
 from controllers.auth import register_user, login_user
 from controllers.projectCRUD import create_Project, delete_Project, get_Project, get_Projects, update_project
 
@@ -28,8 +28,8 @@ def update():
 
 
 @projects_bp.route('/projects/<id>',methods=['DELETE'])
-def delete():
-    return delete_Project()
+def delete(id):
+    return delete_Project(id)
 
 
 # ========session=============

@@ -27,11 +27,13 @@ def get_Project(id):
     
 def delete_Project(id):
     project=Projects.query.get(id)
+    print(project)
     if project:
+        project_data = project_schema.dump(project)
         db.session.delete(project)
         db.session.commit()  # confirma el delete
-        # return jsonify(result), 200                  
-    return project_schema.jsonify(project), 200 # me devuelve un json con el registro eliminado
+        return jsonify({'result': 'success', 'id': id}), 200                  
+    return project_schema.jsonify(project),404  # me devuelve un json con el registro eliminado
 
 def create_Project():
     print(request.json)  # request.json contiene el json que envio el cliente
