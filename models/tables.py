@@ -39,4 +39,3 @@ class Projects(db.Model):   # La clase Projects hereda de db.Model de SQLAlchemy
         self.description = description
         self.image = image
         self.user_id = user_id
-

@@ -50,10 +50,3 @@ def login():
 @users_bp.route('/register', methods=['POST'])
 def register():
     return register_user()
-
-   
-
-   
-
-    
-
