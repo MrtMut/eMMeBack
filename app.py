@@ -31,4 +31,4 @@ with app.app_context():
 
 # programa principal *******************************
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)  # ejecuta el servidor Flask en el puerto 5000
+    app.run(debug=True, port=5005)  # ejecuta el servidor Flask en el puerto 5005
