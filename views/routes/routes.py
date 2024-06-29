@@ -13,8 +13,8 @@ def gets():
 
 
 @projects_bp.route('/projects/<id>',methods=['GET'])
-def get():
-    return get_Project()
+def get(id):
+    return get_Project(id)
 
 
 @projects_bp.route('/projects', methods=['POST']) 
@@ -23,8 +23,8 @@ def create():
 
 
 @projects_bp.route('/projects/<id>' ,methods=['PUT'])
-def update():
-    return update_project()
+def update(id):
+    return update_project(id)
 
 
 @projects_bp.route('/projects/<id>',methods=['DELETE'])
