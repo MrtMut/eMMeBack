@@ -13,7 +13,7 @@ def gets():
 
 
 @projects_bp.route('/projects/<id>',methods=['GET'])
-def get():
+def get(id):
     return get_Project(id)
 
 
