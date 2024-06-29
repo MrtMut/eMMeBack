@@ -3,6 +3,7 @@ __pycache__/
 *$py.class
 
 # Environments
+aentorno
 .env
 .venv
 env/
