@@ -14,7 +14,7 @@ def gets():
 
 @projects_bp.route('/projects/<id>',methods=['GET'])
 def get():
-    return get_Project()
+    return get_Project(id)
 
 
 @projects_bp.route('/projects', methods=['POST']) 
