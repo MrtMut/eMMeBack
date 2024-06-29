@@ -28,8 +28,8 @@ def update(id):
 
 
 @projects_bp.route('/projects/<id>',methods=['DELETE'])
-def delete():
-    return delete_Project()
+def delete(id):
+    return delete_Project(id)
 
 
 # ========session=============
