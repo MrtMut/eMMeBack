@@ -128,7 +128,6 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
-
 # PyCharm
 #  JetBrains IDEs
 #  https://www.jetbrains.com/help/pycharm/project-and-ide-settings.html
