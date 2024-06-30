@@ -1,6 +1,7 @@
 __pycache__/
 *.py[cod]
 *$py.class
+*__pycache__
 
 # Environments
 aentorno
@@ -11,6 +12,8 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+/env/
+/venv/
 
 # Byte-compiled / optimized / DLL files
 *.pyd
