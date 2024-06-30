@@ -1,19 +1,19 @@
-
-from flask import jsonify, request, session
+from flask import jsonify, request, session, flash
 from werkzeug.security import generate_password_hash, check_password_hash
-from models.tables import Users , db
+from models.tables import Users, db
+
+
 
 def register_user():
     if request.is_json:
         data = request.get_json()
         try:
-            hashed_password = generate_password_hash(data['password'], method='pbkdf2', salt_length = 16)
+            hashed_password = generate_password_hash(data['password'])
             new_user = Users(
                 name=data['name'],
                 email=data['email'],
-                image='url', 
-                admin=1,
-                user_name='lalala',
+                image=data['image'],
+                user_name=data['user_name'],
                 password=hashed_password
             )
             db.session.add(new_user)
@@ -25,17 +25,33 @@ def register_user():
     else:
         return jsonify({"message": "Request must be JSON"}), 415
 
+
 def login_user():
-    email = request.json.get('email')
-    password = request.json.get('password')
-    
-    
-    user = Users.query.filter_by(email = email).first()
-    
-    if user and check_password_hash(user.password, password):
-        session['usuario'] = user.email
-        session['logged_in'] = True
-        print(session)
-        return jsonify({'message': 'Inicio de sesión exitoso'}), 200
-    
-    return jsonify({'message': 'Credenciales incorrectas'}), 401
+    if request.method == 'POST':
+        data = request.get_json()
+        email = data['email']
+        password = data['password']
+        print(email, password)
+
+        user = Users.query.filter_by(email=email).first()
+        print("USER", user)
+        print("hashed_password", )
+        print("user.user_name", user.user_name)
+        print("user.password",user.password)
+
+        if user and check_password_hash(user.password, password):
+            db.session.add(user)
+            db.session.commit()
+
+            flash('You have been registered!', 'success')
+            return jsonify({'message': 'Inicio de sesión exitoso'}), 200
+        else:
+            return jsonify({'message': 'Credenciales incorrectas'}), 401
+
+        # user = Users.query.filter_by(email=email).first()
+        #     if user and check_password_hash(user.password, password):
+        #         session['user_id'] = user.email
+        #         session['logged_in'] = True
+        #         return jsonify({'message': 'Inicio de sesión exitoso'}), 200
+        #     else:
+        #         return jsonify({'message': 'Credenciales incorrectas'}), 401
