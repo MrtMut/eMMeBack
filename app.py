@@ -24,11 +24,7 @@ migrate = Migrate(app, db)
 ma.init_app(app)  #crea el objeto ma de de la clase Marshmallow
 login_manager = LoginManager(app)
 login_manager.login_view = 'views.users.login'
-
-
-# crea las tablas de la BBDD si no existen
-with app.app_context():
-    db.create_all()  # aqui crea todas las tablas si es que no estan creadas
+login_manager.init_app(app)
 
 
 @login_manager.user_loader
@@ -39,6 +35,9 @@ def load_user(user_id):
 app.register_blueprint(projects_bp)
 app.register_blueprint(users_bp)
 
+# crea las tablas de la BBDD si no existen
+with app.app_context():
+    db.create_all()  # aqui crea todas las tablas si es que no estan creadas
 
 # programa principal *******************************
 if __name__ == '__main__':
