@@ -1,10 +1,8 @@
 from flask import Blueprint
-from sqlalchemy.sql.functions import user
-
-from models.tables import ma, Users
-from controllers.auth import register_user, login_post
+from models.tables import ma
+from controllers.auth import register_user, login_post, profile_user
 from controllers.projectCRUD import create_Project, delete_Project, get_Project, get_Projects, update_project
-from flask_login import login_user, login_required
+from flask_login import login_required
 
 projects_bp = Blueprint('projects', __name__)
 users_bp = Blueprint('users', __name__)
