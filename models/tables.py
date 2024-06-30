@@ -5,7 +5,6 @@ from flask_login import UserMixin
 db = SQLAlchemy()
 ma = Marshmallow()
 
-
 # Definición de la tabla Users
 class Users(db.Model, UserMixin):  # La clase Users hereda de db.Model de SQLAlchemy
     id = db.Column(db.Integer, primary_key=True)  # Define los campos de la tabla

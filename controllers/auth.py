@@ -3,7 +3,6 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from models.tables import Users, db
 
 
-
 def register_user():
     if request.is_json:
         data = request.get_json()
@@ -35,7 +34,6 @@ def login_user():
 
         user = Users.query.filter_by(email=email).first()
         print("USER", user)
-        print("hashed_password", )
         print("user.user_name", user.user_name)
         print("user.password",user.password)
 
@@ -47,11 +45,3 @@ def login_user():
             return jsonify({'message': 'Inicio de sesión exitoso'}), 200
         else:
             return jsonify({'message': 'Credenciales incorrectas'}), 401
-
-        # user = Users.query.filter_by(email=email).first()
-        #     if user and check_password_hash(user.password, password):
-        #         session['user_id'] = user.email
-        #         session['logged_in'] = True
-        #         return jsonify({'message': 'Inicio de sesión exitoso'}), 200
-        #     else:
-        #         return jsonify({'message': 'Credenciales incorrectas'}), 401

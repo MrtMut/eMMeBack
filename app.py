@@ -25,8 +25,6 @@ ma.init_app(app)  #crea el objeto ma de de la clase Marshmallow
 login_manager = LoginManager(app)
 login_manager.login_view = 'views.users.login'
 
-# registrar los blueprints
-
 
 # crea las tablas de la BBDD si no existen
 with app.app_context():
@@ -40,10 +38,6 @@ def load_user(user_id):
 
 app.register_blueprint(projects_bp)
 app.register_blueprint(users_bp)
-
-# @app.route('/')
-# def index():
-#     return render_template('index.html')
 
 
 # programa principal *******************************
