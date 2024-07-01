@@ -33,7 +33,6 @@ pyinstaller==6.0.0
 pyinstaller-hooks-contrib==2023.9
 PyMySQL==1.1.1
 python-dotenv==1.0.1
-pywin32-ctypes==0.2.2
 setuptools==70.1.1
 SQLAlchemy==2.0.31
 typing_extensions==4.12.2
