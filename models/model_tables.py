@@ -37,8 +37,6 @@ class Projects(db.Model):  # La clase Projects hereda de db.Model de SQLAlchemy
         self.user_id = user_id
 
 
-
-# # Definición de la tabla Tasks
-# with app.app_context():
-#     db.create_all()  # aqui crea todas las tablas
-#  ************************************************************
+# Definición de la tabla Tasks
+with app.app_context():
+    db.create_all()  # aqui crea todas las tablas

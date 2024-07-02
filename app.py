@@ -4,7 +4,6 @@ from flask_marshmallow import Marshmallow
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 
-
 app = Flask(__name__)
 CORS(app)  # modulo cors es para que me permita acceder desde el frontend al backend
 
@@ -20,11 +19,6 @@ from routes.route import *
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
-
-
-# Definición de la tabla Tasks
-with app.app_context():
-    db.create_all()  # aqui crea todas las tablas
 
 # programa principal *******************************
 if __name__ == '__main__':
