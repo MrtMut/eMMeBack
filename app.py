@@ -1,45 +1,31 @@
-from flask import Flask  # session, render_template
+from flask import Flask
 from flask_cors import CORS
-from flask_migrate import Migrate
+from flask_marshmallow import Marshmallow
 from flask_login import LoginManager
-from models.tables import db, ma, Users
-from views.routes.routes import projects_bp, users_bp
-#import os
-#from dotenv import load_dotenv
+from flask_sqlalchemy import SQLAlchemy
 
-app = Flask(__name__)  # crear el objeto app de la clase Flask
+
+app = Flask(__name__)
 CORS(app)  # modulo cors es para que me permita acceder desde el frontend al backend
-#load_dotenv()
-#password = os.getenv("DB_PASSWORD")
-#app.secret_key = os.getenv("SESSION_PASSWORD")
-PASSWORD = '123123123'
-SESSION_PASSWORD = '123123123'
-app.config['UPLOAD_FOLDER'] = 'uploads/'
+
 app.config['SECRET_KEY'] = 'tu_clave_secreta_sarasa'
-# configuro la base de datos, con el nombre el usuario y la clave
-app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://root:{PASSWORD}@localhost/emmedb'
-# URI de la BBDD                          driver de la BD  user:clave@URLBBDD/nombreBBDD
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  #none
+app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://root:123123123@localhost/emmedb'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-db.init_app(app)
-migrate = Migrate(app, db)
-ma.init_app(app)  #crea el objeto ma de de la clase Marshmallow
-login_manager = LoginManager(app)
-login_manager.login_view = 'views.routes.users.login'
+db = SQLAlchemy(app)   #crea el objeto db de la clase SQLAlquemy
+ma = Marshmallow(app)   #crea el objeto ma de de la clase Marshmallow
 
+from routes.route import *
 
-@login_manager.user_loader
-def load_user(user_id):
-    return Users.query.get(int(user_id))
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
 
 
-app.register_blueprint(projects_bp)
-app.register_blueprint(users_bp)
-
-# crea las tablas de la BBDD si no existen
+# Definición de la tabla Tasks
 with app.app_context():
-    db.create_all()  # aqui crea todas las tablas si es que no estan creadas
+    db.create_all()  # aqui crea todas las tablas
 
 # programa principal *******************************
 if __name__ == '__main__':
-    app.run(debug=True, port=5005)  # ejecuta el servidor Flask en el puerto 5005
+    app.run(debug=True, port=5000)  # ejecuta el servidor Flask en el puerto 5000

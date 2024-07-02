@@ -1,0 +1,1 @@
+pip install Flask==2.1.2 Flask-Bcrypt Flask-Cors Flask-Login flask-marshmallow Flask-Migrate Flask-MySQLdb Flask-SQLAlchemy bcrypt marshmallow marshmallow-sqlalchemy PyMySQL SQLAlchemy Werkzeug

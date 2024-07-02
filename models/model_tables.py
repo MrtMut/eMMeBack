@@ -1,9 +1,6 @@
-from flask_sqlalchemy import SQLAlchemy
-from flask_marshmallow import Marshmallow
 from flask_login import UserMixin
+from app import app, db
 
-db = SQLAlchemy()
-ma = Marshmallow()
 
 # Definición de la tabla Users
 class Users(db.Model, UserMixin):  # La clase Users hereda de db.Model de SQLAlchemy
@@ -38,3 +35,10 @@ class Projects(db.Model):  # La clase Projects hereda de db.Model de SQLAlchemy
         self.description = description
         self.image = image
         self.user_id = user_id
+
+
+
+# # Definición de la tabla Tasks
+# with app.app_context():
+#     db.create_all()  # aqui crea todas las tablas
+#  ************************************************************
