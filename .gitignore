@@ -7,6 +7,8 @@ __pycache__/
 aentorno
 .env
 .venv
+venv*
+env*
 env/
 venv/
 ENV/
