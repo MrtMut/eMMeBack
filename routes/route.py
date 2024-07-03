@@ -1,7 +1,8 @@
 from controllers.controller_auth import *
 from app import app
+from flask_login import login_required
 
-
+##################### Project Routes ##########
 @app.route('/')
 def index():
     return 'Hello World'
@@ -31,22 +32,24 @@ def update(id):
 def delete(id):
     return delete_project(id)
 
-
-
-
-
-@app.route('/login', methods=['POST'])
-def login():
-    return login_post()
-
+##################### User Routes ##########
 
 @app.route('/register', methods=['POST'])
 def register():
     return register_user()
 
 
-@app.route('/profile')
-#@login_required
-def profile():
-    return 'Profile Page'
-    #return profile_user()
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        return login_user_controller()
+
+
+@app.route('/logout', methods=['POST'])
+def logout():
+    return logout_user_controller()
+
+
+@app.route('/home', methods=['GET'])
+def home_route():
+    return home_user_controller()

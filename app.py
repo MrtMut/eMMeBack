@@ -11,14 +11,20 @@ app.config['SECRET_KEY'] = 'tu_clave_secreta_sarasa'
 app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://root:123123123@localhost/emmedb'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-db = SQLAlchemy(app)   #crea el objeto db de la clase SQLAlquemy
-ma = Marshmallow(app)   #crea el objeto ma de de la clase Marshmallow
+db = SQLAlchemy(app)  #crea el objeto db de la clase SQLAlquemy
+ma = Marshmallow(app)  #crea el objeto ma de de la clase Marshmallow
 
 from routes.route import *
 
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return Users.query.get(int(user_id))
+
 
 # programa principal *******************************
 if __name__ == '__main__':
