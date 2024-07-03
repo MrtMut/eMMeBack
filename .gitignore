@@ -9,6 +9,8 @@ aentorno
 .venv
 venv*
 env*
+venv310
+env310
 env/
 venv/
 ENV/
