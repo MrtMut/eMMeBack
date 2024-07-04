@@ -25,43 +25,48 @@ def register_user():
             )
             db.session.add(new_user)
             db.session.commit()
-            return jsonify({"message": "User created successfully"}), 201
+            return jsonify({"message": "Usuario creado exitosamente"}), 201
         except Exception as e:
             db.session.rollback()
-            return jsonify({"message": "Error creating user", "error": str(e)}), 500
+            return jsonify({"message": "Error creando usuario", "error": str(e)}), 500
     else:
         return jsonify({"message": "Request must be JSON"}), 415
 
 
 def login_user_controller():
-    data = request.get_json()
-    email = data['email']
-    password = data['password']
-    remember = True if data['remember-me'] else False
-    user = Users.query.filter_by(email=email).first()
-    if user and check_password_hash(user.password, password):
-        login_user(user, remember=remember)
-        next_page = request.args.get('next')
-        if next_page:
-            return jsonify({'message': 'Login successful', 'redirect': next_page}), 200
-        return jsonify({'message': 'Login successful'}), 200
+    if request.is_json:
+        data = request.get_json()
+        email = data['email']
+        password = data['password']
+        remember = True if data['remember-me'] else False
+        user = Users.query.filter_by(email=email).first()
+        if user and check_password_hash(user.password, password):
+            login_user(user, remember=remember)
+            next_page = request.args.get('next')
+            if next_page:
+                return jsonify({'message': 'Login exitoso', 'redirect': next_page}), 200
+            return jsonify({'message': 'Login exitoso'}), 200
+        else:
+            return (jsonify({'message': 'Login erróneo. Revise su Usuario y Contraseña',
+                             'loginSuccess': 'false'}),
+                    401)
     else:
-        return jsonify({'message': 'Login unsuccessful. Check username and password'}), 401
-
+        return jsonify({'message': 'Request must be JSON', 'loginSuccess': 'false'}), 415
 
 def logout_user_controller():
     if current_user.is_authenticated:
         logout_user()
-        return jsonify({'message': 'Logout successful'}), 200
+        return jsonify({'message': 'Logout exitoso'}), 200
     else:
-        return jsonify({'message': 'page'}), 200
+        return login_user_controller()
+        #return jsonify({'message': 'page'}), 200
 
 
 def home_user_controller():
     if current_user.is_authenticated:
-        return jsonify({'message': f'Logged in as: {current_user.user_name}'}), 200
+        return jsonify({'message': f'Bienvenido: {current_user.user_name}'}), 200
     else:
-        return jsonify({'message': 'User not authenticated'})
+        return jsonify({'message': 'Usuario no autenticado'})
 
 
 
@@ -84,7 +89,7 @@ def get_projects():
         result = projects_schema.dump(all_projects)
         return jsonify(result), 200
     else:
-        return jsonify({'message': 'Projects not found'}), 404
+        return jsonify({'message': 'Proyecto no encontrado'}), 404
 
 
 def get_project(id):
@@ -93,7 +98,7 @@ def get_project(id):
     if project:
         return project_schema.jsonify(project), 200  # retorna el JSON de un producto recibido como parametro
     else:
-        return jsonify({'message': 'Project not found'}), 404
+        return jsonify({'message': 'Proyecto no encontrado'}), 404
 
 
 def delete_project(id):

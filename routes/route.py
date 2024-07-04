@@ -2,6 +2,13 @@ from controllers.controller_auth import *
 from app import app
 from flask_login import login_required
 
+
+@app.route('/test')
+def test():
+    return 'Test'
+
+
+
 ##################### Project Routes ##########
 @app.route('/')
 def index():
