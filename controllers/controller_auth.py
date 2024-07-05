@@ -4,9 +4,11 @@ from models.model_tables import Users, Projects
 from flask_login import login_user, current_user, logout_user, login_required
 from app import db, ma
 
+
 class UsersSchema(ma.Schema):
     class Meta:
-        fields = ('id', 'name', 'email', 'image', 'admin', 'user_name', 'password')
+        fields = ('id', 'name', 'email', 'image', 'admin', 'username', 'password')
+
 
 user_schema = UsersSchema()
 
@@ -20,9 +22,11 @@ def register_user():
                 name=data['name'],
                 email=data['email'],
                 image=data['image'],
-                user_name=data['user_name'],
+                username=data['username'],
                 password=hashed_password
             )
+            if Users.query.filter_by(email=data['email']).first():
+                return jsonify({"message": "Usuario ya registrado"}), 409
             db.session.add(new_user)
             db.session.commit()
             return jsonify({"message": "Usuario creado exitosamente"}), 201
@@ -33,42 +37,55 @@ def register_user():
         return jsonify({"message": "Request must be JSON"}), 415
 
 
-def login_user_controller():
+""" def login_user_controller():
     if request.is_json:
         data = request.get_json()
-        email = data['email']
-        password = data['password']
-        remember = True if data['remember-me'] else False
+        email = data.get('email')
+        password = data.get('password')
+        remember = data.get('remember-me', False)
+        #remember = True if data['remember-me'] else False
         user = Users.query.filter_by(email=email).first()
+        if not user:
+            return jsonify({"message": "Usuario incorrecto o no esta registrado"}), 401
+        if not check_password_hash(user.password, password):
+            return jsonify({"message": "Contraseña incorrecta"}), 401
         if user and check_password_hash(user.password, password):
             login_user(user, remember=remember)
+            session['username'] = user.username  # Assuming 'username' is an attribute of your User model
+            print("SESSION 1:", session['username']) # ACA DA BIEN
+            session.modified = True  # Asegúrate de que la sesión se guarde
             next_page = request.args.get('next')
             if next_page:
                 return jsonify({'message': 'Login exitoso', 'redirect': next_page}), 200
-            return jsonify({'message': 'Login exitoso'}), 200
+            return jsonify({'message': 'Login exitoso', 'loginStatus': 'success'}), 200
         else:
-            return (jsonify({'message': 'Login erróneo. Revise su Usuario y Contraseña',
-                             'loginSuccess': 'false'}),
-                    401)
+            return jsonify({'message': 'Login erróneo. Revise su Usuario y Contraseña', 'loginSuccess': 'false'}), 401
     else:
-        return jsonify({'message': 'Request must be JSON', 'loginSuccess': 'false'}), 415
+        return jsonify({'message': 'Request must be JSON', 'loginSuccess': 'false'}), 415 """
+
+
+""" def check_login_controller():
+    print("SESSION 2:", session.get('username')) # ACA NO DA BIEN
+    if 'username' in session:
+        return jsonify({'logged_in': True, 'username': session['username']})
+    return jsonify({'logged_in': False}) """
+
 
 def logout_user_controller():
     if current_user.is_authenticated:
         logout_user()
+        session.pop('username', None)
+        session.pop('email', None)
         return jsonify({'message': 'Logout exitoso'}), 200
     else:
-        return login_user_controller()
-        #return jsonify({'message': 'page'}), 200
+        return jsonify({'message': 'Usuario no autenticado'}), 401
 
 
 def home_user_controller():
     if current_user.is_authenticated:
-        return jsonify({'message': f'Bienvenido: {current_user.user_name}'}), 200
+        return jsonify({'message': f'Bienvenido: {current_user.username}'}), 200
     else:
         return jsonify({'message': 'Usuario no autenticado'})
-
-
 
 
 ############# PROJECTS ##########

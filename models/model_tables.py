@@ -9,14 +9,14 @@ class Users(db.Model, UserMixin):  # La clase Users hereda de db.Model de SQLAlc
     email = db.Column(db.String(30), nullable=False, unique=True)
     image = db.Column(db.String(500))
     admin = db.Column(db.Boolean, default=False)
-    user_name = db.Column(db.String(15), nullable=False, unique=True)
+    username = db.Column(db.String(15), nullable=False, unique=True)
     password = db.Column(db.String(500), nullable=False)
 
-    def __init__(self, name, email, image, user_name, password):  # Constructor de la clase
+    def __init__(self, name, email, image, username, password):  # Constructor de la clase
         self.name = name  # No hace falta id porque lo crea sola MySQL por ser auto_incremento
         self.email = email
         self.image = image
-        self.user_name = user_name
+        self.username = username
         self.password = password
 
 
