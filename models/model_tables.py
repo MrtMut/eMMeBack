@@ -3,7 +3,7 @@ from app import app, db
 
 
 # Definición de la tabla Users
-class Users(db.Model, UserMixin):  # La clase Users hereda de db.Model de SQLAlchemy
+class User(db.Model, UserMixin):  # La clase Users hereda de db.Model de SQLAlchemy
     id = db.Column(db.Integer, primary_key=True)  # Define los campos de la tabla
     name = db.Column(db.String(30))
     email = db.Column(db.String(30), nullable=False, unique=True)
@@ -21,13 +21,13 @@ class Users(db.Model, UserMixin):  # La clase Users hereda de db.Model de SQLAlc
 
 
 # Definición de la tabla Projects
-class Projects(db.Model):  # La clase Projects hereda de db.Model de SQLAlchemy
+class Project(db.Model):  # La clase Projects hereda de db.Model de SQLAlchemy
     id = db.Column(db.Integer, primary_key=True)  # Define los campos de la tabla
     name_project = db.Column(db.String(30))
     category = db.Column(db.String(30))
     description = db.Column(db.String(1000))
     image = db.Column(db.String(500))
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)  # Llave foránea
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)  # Llave foránea
 
     def __init__(self, name_project, category, description, image, user_id):  # Constructor de la clase
         self.name_project = name_project  # No hace falta id porque lo crea sola MySQL por ser auto_incremento
@@ -39,4 +39,4 @@ class Projects(db.Model):  # La clase Projects hereda de db.Model de SQLAlchemy
 
 # Definición de la tabla Tasks
 with app.app_context():
-    db.create_all()  # aqui crea todas las tablas
+    db.create_all()  # aquí crea todas las tablas

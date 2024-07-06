@@ -5,12 +5,13 @@ from flask_cors import CORS
 from flask_marshmallow import Marshmallow
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
 CORS(app, supports_credentials=True, resources={r"/*": {"origins": "http://127.0.0.1:5500"}})  # Permitir el origen específico
 CORS(app, resources={r"/fonts/*": {
-    "origins": ["http://127.0.0.1:5000", "http://127.0.0.1:5500"],
+    "origins": ["http://127.0.0.1:5500"],
     "methods": ["GET", "OPTIONS"],
     "allow_headers": ["Content-Type"]
 }})
@@ -24,9 +25,9 @@ app.config['SESSION_TYPE'] = 'filesystem'  # Opcional: para almacenar las sesion
 app.config['SESSION_COOKIE_SECURE'] = True  # Opcional: para usar HTTPS en la sesión
 
 
-
-db = SQLAlchemy(app)  #crea el objeto db de la clase SQLAlquemy
-ma = Marshmallow(app)  #crea el objeto ma de de la clase Marshmallow
+db = SQLAlchemy(app)  #crea el objeto db de la clase SQLAlchemy
+ma = Marshmallow(app)  #crea el objeto ma de la clase Marshmallow
+migrate = Migrate(app, db)
 
 from routes.route import *
 
@@ -37,7 +38,7 @@ login_manager.login_view = 'login'
 
 @login_manager.user_loader
 def load_user(user_id):
-    return Users.query.get(int(user_id))
+    return User.query.get(int(user_id))
 
 
 # programa principal *******************************
