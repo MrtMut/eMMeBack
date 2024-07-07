@@ -1,4 +1,4 @@
-from flask import jsonify, request, session
+from flask import jsonify, redirect, request, session, url_for
 from werkzeug.security import generate_password_hash, check_password_hash
 from models.model_tables import User, Project
 from flask_login import login_user, current_user, logout_user
@@ -15,7 +15,7 @@ user_schema = UserSchema()
 
 def register_user():
     if current_user.is_authenticated:
-        return jsonify({'message': 'You are already logged in!'}), 401
+        return jsonify({'message': 'Ya estas autenticado!'}), 401
     else:
         if request.is_json:
             data = request.get_json()
@@ -37,16 +37,22 @@ def register_user():
                 db.session.rollback()
                 return jsonify({"message": "Error creando usuario", "error": str(e)}), 500
         else:
-            return jsonify({"message": "Request must be JSON"}), 415
+            return jsonify({"message": "La solicitud debe ser JSON"}), 415
 
 
 def login_user_controller():
+    if current_user.is_authenticated:
+        next_page = request.args.get('next')
+        if next_page:
+            return jsonify({'message': 'Login exitoso', 'redirect': next_page}), 200
+        return jsonify({'message': 'Ya estas autenticado!', 'loginStatus': 'success', 'username': current_user.username}), 200
+
     if request.is_json:
         data = request.get_json()
         email = data.get('email')
         password = data.get('password')
         remember = data.get('remember-me', False)
-        user = User.query.filter_by(email=email).first()
+        user = User.query.filter_by(email=email).first()        
         if not user:
             return jsonify({"message": "Usuario incorrecto o no esta registrado"}), 401
         if not check_password_hash(user.password, password):
@@ -63,24 +69,28 @@ def login_user_controller():
         else:
             return jsonify({'message': 'Login erróneo. Revise su Usuario y Contraseña', 'loginStatus': 'failed'}), 401
     else:
-        return jsonify({'message': 'Request must be JSON', 'loginStatus': 'failed'}), 415
+        return jsonify({"message": "Usuario incorrecto o no esta registrado"}), 401
 
 
 def check_login_controller():
-    username = session.get('username')
-    if username:
-        return jsonify({'logged_in': True, 'username': username})
-    return jsonify({'logged_in': False})
+    if current_user.is_authenticated:
+        username = session.get('username')
+        if username:
+            return jsonify({'logged_in': True, 'username': username}), 200
+        return jsonify({'logged_in': False}), 401
+    else:
+        return jsonify({'logged_in': False}), 401
 
 
-def logout_user_controller():
+def logout_user_controller():   
     if current_user.is_authenticated:
         logout_user()
         session.pop('username', None)
         session.pop('email', None)
-        return jsonify({'message': 'Logout exitoso'}), 200
+        return jsonify({'logoutStatus': 'success'}), 200
+        #return jsonify({'message': 'Logout exitoso'}), 200
     else:
-        return login_user_controller()
+        return jsonify({"message": "Usuario incorrecto o no esta registrado"}), 401
 
 
 def home_user_controller():
@@ -102,7 +112,9 @@ projects_schema = ProjectSchema(many=True)
 
 
 def get_projects():
-    if current_user.is_authenticated:
+   """  if current_user.is_anonymous:
+        return jsonify({'message': 'Usuario no autenticado'}), 401 """
+   if current_user.is_authenticated:
         username = current_user.username
         print('username', username)
         all_projects = Project.query.all()  # el método query.all() lo hereda de db.Model
@@ -111,11 +123,13 @@ def get_projects():
             return jsonify({'message': 'Proyectos encontrados', 'result': result, 'username': username}), 200
         else:
             return jsonify({'message': 'Proyecto no encontrado'}), 404
-    else:
+   else:
         return jsonify({'message': 'Usuario no autenticado'}), 401
 
 
 def get_project(id):
+    if current_user.is_anonymous:
+        return jsonify({'message': 'Usuario no autenticado'}), 401
     project = Project.query.get(id)
     if project:
         return project_schema.jsonify(project), 200  # retorna el JSON de un producto recibido como parámetro
@@ -124,6 +138,8 @@ def get_project(id):
 
 
 def delete_project(id):
+    if current_user.is_anonymous:
+        return jsonify({'message': 'Usuario no autenticado'}), 401
     print("current_user.admin:", current_user.admin)
     if current_user.is_authenticated and current_user.admin:
         project = Project.query.get(id)
@@ -135,6 +151,8 @@ def delete_project(id):
 
 
 def create_project():
+    if current_user.is_anonymous:
+        return jsonify({'message': 'Usuario no autenticado'}), 401
     if current_user.is_authenticated and current_user.admin:
         name_project = request.json['name_project']
         category = request.json['category']
@@ -150,13 +168,39 @@ def create_project():
 
 
 def update_project(id):
+    """ if current_user.is_anonymous:
+        return jsonify({'message': 'Usuario no autenticado'}), 401 """
     if current_user.is_authenticated and current_user.admin:
+
         project = Project.query.get(id)
-        project.name_project = request.json['name_project']
-        project.category = request.json['category']
-        project.description = request.json['description']
-        project.image = request.json['image']
-        db.session.commit()  # confirma el cambio
-        return project_schema.jsonify(project), 200  # y retorna un json con el producto
+        if not project:
+            return jsonify({"error": "Project not found"}), 404
+
+        data = request.json
+
+        # Imprimir el JSON recibido para depuración
+        print(data)
+
+        required_keys = ['name_project', 'category', 'description', 'client', 'image']
+        for key in required_keys:
+            if key not in data:
+                return jsonify({"error": f"'{key}' is required"}), 400
+            
+        print("current_user.admin:", current_user.admin)
+
+        try:
+            project.name_project = data.get('name_project')
+            project.category = data.get('category')
+            project.description = data.get('description')
+            project.user_id = data.get('client')
+            project.image = data.get('image')
+            db.session.commit()  # confirma el cambio
+            return jsonify({"message": "Project updated successfully"}), 200
+            #return ({'message': 'Proyecto actualizado', 'project': project_schema.jsonify(project)}), 200  # me devuelve un json con el registro actualizado
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({"error": str(e)}), 500
+
+            #project_schema.jsonify(project), 200)  # y retorna un json con el producto
     else:
         return jsonify({'message': 'Usuario no Administrador'}), 401

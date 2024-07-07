@@ -1,4 +1,6 @@
-from flask import send_file
+from datetime import timedelta
+from flask import redirect, send_file, url_for
+from flask_cors import cross_origin
 from controllers.controller_auth import *
 from app import app, login_manager
 from flask_login import login_required
@@ -12,12 +14,21 @@ def test():
 def serve_font():
     return send_file('path/to/font.woff2')
 
-##################### Project Routes ##########
-@app.route('/')
-def index():
-    return 'Hello World'
+
+@app.before_request
+def before_request():
+    session.permanent = True  # Esto asegura que la sesión tenga el tiempo de vida configurado
+    app.permanent_session_lifetime = timedelta(minutes=30)
+    if current_user.is_authenticated:
+        session.modified = True  # Esto renueva la sesión con cada solicitud
 
 
+@app.errorhandler(401)
+def session_expired(e):
+    return jsonify({'message': 'Session expired', 'redirect': './login.html'}), 401
+
+
+#### Project Routes #################################################
 @app.route('/projects', methods=['GET'])
 @login_manager.user_loader
 def gets():
@@ -34,7 +45,8 @@ def create():
     return create_project()
 
 
-@app.route('/projects/<id>', methods=['PUT'])
+@app.route('/projects/<id>', methods=['PUT', 'GET', 'OPTIONS'])
+@cross_origin(origins=["http://127.0.0.1:5500"], supports_credentials=True)
 def update(id):
     return update_project(id)
 
@@ -43,7 +55,8 @@ def update(id):
 def delete(id):
     return delete_project(id)
 
-##################### User Routes ##########
+
+#### User Routes #################################################3
 
 @app.route('/register', methods=['POST'])
 def register():
@@ -51,6 +64,7 @@ def register():
 
 
 @app.route('/login', methods=['GET', 'POST'])
+@cross_origin(origin='http://localhost:63343', supports_credentials=True)
 def login():
     return login_user_controller()
 
