@@ -1,14 +1,14 @@
 from datetime import timedelta
-from flask import redirect, send_file, url_for
+from flask import send_file
 from flask_cors import cross_origin
 from controllers.controller_auth import *
 from app import app, login_manager
-from flask_login import login_required
 
 
 @app.route('/test')
 def test():
     return 'Test'
+
 
 @app.route('/fonts/roboto/v30/KFOlCnqEu92Fr1MmEU9fBBc4.woff2')
 def serve_font():
@@ -28,7 +28,7 @@ def session_expired(e):
     return jsonify({'message': 'Session expired', 'redirect': './login.html'}), 401
 
 
-#### Project Routes #################################################
+# Project Routes #################################################
 @app.route('/projects', methods=['GET'])
 @login_manager.user_loader
 def gets():
@@ -56,7 +56,7 @@ def delete(id):
     return delete_project(id)
 
 
-#### User Routes #################################################3
+# User Routes #################################################3
 
 @app.route('/register', methods=['POST'])
 def register():

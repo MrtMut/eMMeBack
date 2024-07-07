@@ -88,7 +88,6 @@ def logout_user_controller():
         session.pop('username', None)
         session.pop('email', None)
         return jsonify({'logoutStatus': 'success'}), 200
-        #return jsonify({'message': 'Logout exitoso'}), 200
     else:
         return jsonify({"message": "Usuario incorrecto o no esta registrado"}), 401
 
@@ -112,9 +111,7 @@ projects_schema = ProjectSchema(many=True)
 
 
 def get_projects():
-   """  if current_user.is_anonymous:
-        return jsonify({'message': 'Usuario no autenticado'}), 401 """
-   if current_user.is_authenticated:
+    if current_user.is_authenticated:
         username = current_user.username
         print('username', username)
         all_projects = Project.query.all()  # el método query.all() lo hereda de db.Model
@@ -123,7 +120,7 @@ def get_projects():
             return jsonify({'message': 'Proyectos encontrados', 'result': result, 'username': username}), 200
         else:
             return jsonify({'message': 'Proyecto no encontrado'}), 404
-   else:
+    else:
         return jsonify({'message': 'Usuario no autenticado'}), 401
 
 
@@ -196,11 +193,12 @@ def update_project(id):
             project.image = data.get('image')
             db.session.commit()  # confirma el cambio
             return jsonify({"message": "Project updated successfully"}), 200
-            #return ({'message': 'Proyecto actualizado', 'project': project_schema.jsonify(project)}), 200  # me devuelve un json con el registro actualizado
+            # return ({'message': 'Proyecto actualizado', 'project': project_schema.jsonify(project)}),
+            # 200  # me devuelve un json con el registro actualizado
         except Exception as e:
             db.session.rollback()
             return jsonify({"error": str(e)}), 500
 
-            #project_schema.jsonify(project), 200)  # y retorna un json con el producto
+            # project_schema.jsonify(project), 200)  # y retorna un json con el producto
     else:
         return jsonify({'message': 'Usuario no Administrador'}), 401

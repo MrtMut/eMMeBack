@@ -25,8 +25,8 @@ app.config['SESSION_TYPE'] = 'filesystem'  # Opcional: para almacenar las sesion
 app.config['SESSION_COOKIE_SECURE'] = True  # Opcional: para usar HTTPS en la sesión
 
 
-db = SQLAlchemy(app)  #crea el objeto db de la clase SQLAlchemy
-ma = Marshmallow(app)  #crea el objeto ma de la clase Marshmallow
+db = SQLAlchemy(app)  # crea el objeto db de la clase SQLAlchemy
+ma = Marshmallow(app)  # crea el objeto ma de la clase Marshmallow
 migrate = Migrate(app, db)
 
 from routes.route import *
