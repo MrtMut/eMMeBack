@@ -12,7 +12,9 @@ CORS(app, supports_credentials=True, resources={
     r"/*": {
         "origins": ["http://127.0.0.1:5500", "http://localhost:63343"],
         "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-        "allow_headers": ["Content-Type"]
+        "allow_headers": ["Content-Type"],
+        "expose_headers": ["Content-Type"],
+        "supports_credentials": True
     }
 })
 

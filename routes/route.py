@@ -41,23 +41,25 @@ def get(id):
 
 
 @app.route('/projects', methods=['POST'])
+@login_manager.user_loader
 def create():
     return create_project()
 
 
 @app.route('/projects/<id>', methods=['PUT', 'GET', 'OPTIONS'])
 @cross_origin(origins=["http://127.0.0.1:5500"], supports_credentials=True)
+@login_manager.user_loader
 def update(id):
     return update_project(id)
 
 
 @app.route('/projects/<id>', methods=['DELETE'])
+@login_manager.user_loader
 def delete(id):
     return delete_project(id)
 
 
-# User Routes #################################################3
-
+# User Routes #################################################
 @app.route('/register', methods=['POST'])
 def register():
     return register_user()
@@ -70,6 +72,7 @@ def login():
 
 
 @app.route('/check_login', methods=['GET', 'POST'])
+@login_manager.user_loader
 def check_login():
     return check_login_controller()
 
