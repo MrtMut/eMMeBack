@@ -1,9 +1,14 @@
 from datetime import timedelta
 from flask import send_file
 from flask_cors import cross_origin
+from flask_login import login_required
 from controllers.controller_auth import *
 from app import app, login_manager
 
+
+@app.route('/')
+def index():
+    return '### ### ### ### ### ### ### ### ### ###'
 
 @app.route('/test')
 def test():
@@ -30,7 +35,6 @@ def session_expired(e):
 
 # Project Routes #################################################
 @app.route('/projects', methods=['GET'])
-@login_manager.user_loader
 def gets():
     return get_projects()
 
@@ -41,20 +45,17 @@ def get(id):
 
 
 @app.route('/projects', methods=['POST'])
-@login_manager.user_loader
 def create():
     return create_project()
 
 
 @app.route('/projects/<id>', methods=['PUT', 'GET', 'OPTIONS'])
 @cross_origin(origins=["http://127.0.0.1:5500"], supports_credentials=True)
-@login_manager.user_loader
 def update(id):
     return update_project(id)
 
 
 @app.route('/projects/<id>', methods=['DELETE'])
-@login_manager.user_loader
 def delete(id):
     return delete_project(id)
 
@@ -80,6 +81,14 @@ def check_login():
 @app.route('/logout', methods=['GET', 'POST'])
 def logout():
     return logout_user_controller()
+
+@app.route('/user_manager', methods=['GET'])
+def user_manager():
+    return get_user_controller()
+
+@app.route('/user_manager/<id>', methods=['PUT'])
+def user_manager_id(id):
+    return user_update_controller(id)
 
 
 @app.route('/home', methods=['GET'])

@@ -11,6 +11,8 @@ class UserSchema(ma.Schema):
 
 
 user_schema = UserSchema()
+users_schema = UserSchema(many=True)
+
 
 
 def register_user():
@@ -91,12 +93,51 @@ def logout_user_controller():
     else:
         return jsonify({"message": "Usuario incorrecto o no esta registrado"}), 401
 
+def get_user_controller():
+    all_users = User.query.all()
+    if all_users:
+        print("all_users", all_users)
+        result = users_schema.dump(all_users)
+        return jsonify({'message': 'Usuarios encontrados', 'users': result}), 200
+    else:
+        return jsonify({'message': 'Usuario no Administrador'}), 401
+    
+
+
+    
+
+def user_update_controller(id):    
+    if current_user.is_authenticated and current_user.admin:
+        user = User.query.get(id)
+        
+        if not user:
+            return jsonify({"error": "User not found"}), 404
+        data = request.json    
+        print("DATAAAA", data.get('is_admin'))   
+        print("USERRR", user.admin)
+        if data.get('is_admin') == 'true':
+            user.admin = True
+            db.session.commit()
+        elif data.get('is_admin') == 'false':
+            user.admin = False
+            db.session.commit()
+        else:
+            return jsonify({"message": "No se ha cambiado el estado del usuario"}), 200
+        
+        return jsonify({"message": "Usuario actualizado exitosamente"}), 200          
+    else:
+        return jsonify({'message': 'Usuario no Administrador'}), 401
+
+
 
 def home_user_controller():
     if current_user.is_authenticated:
         return jsonify({'message': f'Bienvenido: {current_user.username}'}), 200
     else:
         return jsonify({'message': 'Usuario no autenticado'})
+
+
+
 
 
 # PROJECTS ##########
@@ -161,8 +202,8 @@ def create_project():
 
 
 def update_project(id):
-    """ if current_user.is_anonymous:
-        return jsonify({'message': 'Usuario no autenticado'}), 401 """
+    if current_user.is_anonymous:
+        return jsonify({'message': 'Usuario no autenticado'}), 401
     if current_user.is_authenticated and current_user.admin:
         project = Project.query.get(id)
         if not project:
